@@ -3,14 +3,22 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const my_schema = new Schema({
-    user: String,
+    chat: {
+        type: Schema.ObjectId,
+        ref: 'Chat',
+    },
+    user: {
+        type: Schema.ObjectId,
+        ref: 'User',
+    },
     message: {
         type: String,
         required: true,
     },
+    file: String,
     date: Date,
 });
 
-const Model = mongoose.model('Messages', my_schema);
+const model = mongoose.model('Messages', my_schema);
 
-module.exports = Model;
+module.exports = model;

@@ -2,7 +2,7 @@ const chalk = require('chalk');
 
 const store = require('./store');
 
-const addMessage = (user, message) => {
+const addMessage = (chat, user, message, file) => {
 
     return new Promise((resolve, reject) => {
 
@@ -14,10 +14,18 @@ const addMessage = (user, message) => {
             });
         }
 
+        let file_url = '';
+
+        if (file) {
+            file_url = `http://localhost:3000/app/files/${file.filename}`
+        }
+
         const full_message = {
+            chat: chat,
             user,
             message,
-            date: new Date()
+            date: new Date(),
+            file: file_url,
         };
     
         store.add(full_message);
@@ -28,20 +36,21 @@ const addMessage = (user, message) => {
     
 }
 
-const getMessages = (filter_user) => {
+const getMessages = (filter) => {
     
-    return new Promise( async (resolve, reject) => {
-        let messages = await store.list(filter_user);
-
-        if (messages.length === 0) {
-            reject({
-                message: 'Not Data Found',
-                status_code: 400,
-                details: `<<Message>> -> No data found on messages.`
-            })
-        }
-
-        resolve(messages);
+    return new Promise((resolve, reject) => {
+        store.list(filter)
+            .then(messages => {
+                if (messages.length === 0) {
+                    reject({
+                        message: 'Not Data Found',
+                        status_code: 400,
+                        details: `<<Message>> -> No data found on messages.`
+                    })
+                }
+        
+                resolve(messages);
+            });
     })
 
 }
