@@ -1,9 +1,12 @@
 const express = require('express');
+const app = express();
+const server = require('http').Server(app);
 
 // Require and config dotenv
 require('dotenv').config()
 
 const router = require('./network/routes');
+const socket = require('./socket');
 const db = require('./db');
 
 /**
@@ -12,7 +15,7 @@ const db = require('./db');
 const url = `${process.env.MONGO_DB_HOST}://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PASSWORD}@${process.env.MONGO_DB_REMAIN}`;
 db.connect(url);
 
-let app = express();
+// Configure express app
 app.use(express.json());
 
 /**
@@ -20,9 +23,17 @@ app.use(express.json());
  */
 router(app);
 
+/**
+ * Socket server
+ */
+socket.connect(server);
+
 app.use('/app', express.static('public'));
 
 /**
  * App config
  */
-app.listen(3000);
+const PORT = 3000;
+server.listen(PORT, () => {
+    console.log(`Server is listening at http://localhost:${PORT}`);
+});
