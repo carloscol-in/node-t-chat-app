@@ -1,15 +1,27 @@
 const Model = require('./model');
 
-const getMessages = async (filter_user) => {
-    let filter = {};
+const getMessages = (filter_messages) => {
+    
+    return new Promise((resolve, reject) => {
+        let filter = {};
+    
+        if (filter_messages !== null) {
+            filter = { 
+                chat: filter_messages
+            };
+        }
+        
+        Model.find(filter)
+            .populate('user')
+            .exec((err, populated) => {
+                if (err) {
+                    reject(err);
+                    return false;
+                }
 
-    if (filter_user !== null) {
-        filter = { user: filter_user };
-    }
-    
-    const messages = await Model.find(filter);
-    
-    return messages;
+                resolve(populated);
+            });
+    })
 }
 
 const addMessage = async (message) => {
