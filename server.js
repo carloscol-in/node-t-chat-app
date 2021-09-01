@@ -14,7 +14,6 @@ db.connect(url);
 
 let app = express();
 app.use(express.json());
-app.use(express.urlencoded());
 
 /**
  * Routers
