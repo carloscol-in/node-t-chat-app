@@ -1,9 +1,27 @@
 const chalk = require('chalk');
 
+const status_messages = {
+    '200': 'Done',
+    '201': 'Created',
+    '400': 'Invalid format',
+    '500': 'Internal error',
+}
+
 exports.success = (req, res, message, status) => {
-    res.status(status || 200).send({
+    let status_code = status;
+    let status_message = message;
+    
+    if (!status) {
+        status_code = 200;
+    }
+    
+    if(!message) {
+        status_message = status_messages[status_code];
+    }
+
+    res.status(status_code).send({
         error: "",
-        body: message
+        body: status_message
     });
 }
 

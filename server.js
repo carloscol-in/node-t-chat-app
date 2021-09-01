@@ -2,18 +2,25 @@ const express = require('express');
 const app = express();
 const server = require('http').Server(app);
 
+const cors = require('cors');
+
 // Require and config dotenv
 require('dotenv').config()
 
-const router = require('./network/routes');
-const socket = require('./socket');
 const db = require('./db');
+const socket = require('./socket');
+const config = require('./config');
+const router = require('./network/routes');
 
 /**
  * Connect to db
  */
-const url = `${process.env.MONGO_DB_HOST}://${process.env.MONGO_DB_USER}:${process.env.MONGO_DB_PASSWORD}@${process.env.MONGO_DB_REMAIN}`;
-db.connect(url);
+db.connect(config.db_url);
+
+/**
+ * Enable CORS
+ */
+app.use(cors());
 
 // Configure express app
 app.use(express.json());
@@ -28,12 +35,12 @@ router(app);
  */
 socket.connect(server);
 
-app.use('/app', express.static('public'));
+app.use(config.public_route, express.static('public'));
 
 /**
  * App config
  */
 const PORT = 3000;
 server.listen(PORT, () => {
-    console.log(`Server is listening at http://localhost:${PORT}`);
+    console.log(`Server is listening at ${config.host}:${config.port}`);
 });

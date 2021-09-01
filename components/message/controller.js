@@ -1,7 +1,8 @@
 const chalk = require('chalk');
 
-const { socket } = require('../../socket');
 const store = require('./store');
+const config = require('../../config');
+const { socket } = require('../../socket');
 
 const addMessage = (chat, user, message, file) => {
 
@@ -18,7 +19,7 @@ const addMessage = (chat, user, message, file) => {
         let file_url = '';
 
         if (file) {
-            file_url = `http://localhost:3000/app/files/${file.filename}`
+            file_url = `${config.host}:${config.host}${config.public_route}/files/${file.filename}`
         }
 
         const full_message = {
