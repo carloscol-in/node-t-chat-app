@@ -1,5 +1,6 @@
 const chalk = require('chalk');
 
+const { socket } = require('../../socket');
 const store = require('./store');
 
 const addMessage = (chat, user, message, file) => {
@@ -29,6 +30,8 @@ const addMessage = (chat, user, message, file) => {
         };
     
         store.add(full_message);
+
+        socket.io.emit('message', full_message);
 
         resolve(full_message);
 
